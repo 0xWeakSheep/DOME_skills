@@ -3,6 +3,10 @@
  *
  * This module provides functions for discovering, filtering, and analyzing
  * Polymarket markets through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
 /** Custom error classes for DOME API */
 export declare class DomeAPIError extends Error {
@@ -83,6 +87,9 @@ export declare function fetchAllMarkets(apiKey: string, params?: Omit<FetchMarke
 }): Promise<Market[]>;
 /**
  * Normalize and extract key fields from market data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export declare function parseMarketData(market: Market): ParsedMarket;
 /** Parsed market data structure */
@@ -103,7 +110,7 @@ export interface ParsedMarket {
     volume_1_month: number;
     volume_1_year: number;
     image: string;
-    resolution_source: string | undefined;
+    resolution_source: string | null;
     side_a: {
         token_id: string | null;
         label: string | null;

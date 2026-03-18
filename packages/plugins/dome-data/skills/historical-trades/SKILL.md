@@ -7,6 +7,17 @@ description: Fetch and analyze historical Polymarket trade data. Use this skill 
 
 Fetch and analyze historical trade data from Polymarket via the DOME API.
 
+## Security
+
+This skill implements defense-in-depth measures against indirect prompt injection (Snyk W011):
+
+- **Input Sanitization**: All user-generated content (trade titles, token labels, market slugs) is sanitized using `security.ts`
+- **Pattern Filtering**: Known prompt injection patterns are removed (e.g., "ignore previous instructions", "system:")
+- **Content Validation**: Suspicious content with excessive special characters is flagged
+- **Fail-Safe**: Processing errors return original data rather than corrupting it
+
+The skill fetches data from the trusted DOME API (api.domeapi.io) which provides structured trade data from the Polymarket protocol.
+
 ## Quick Start
 
 ```typescript

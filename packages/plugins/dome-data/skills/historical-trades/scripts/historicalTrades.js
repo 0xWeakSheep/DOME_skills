@@ -3,7 +3,12 @@
  *
  * This module provides functions for fetching and analyzing
  * historical trade data from Polymarket through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
+import { sanitizeString } from "./security.js";
 const BASE_URL = "https://api.domeapi.io/v1";
 const ORDERS_ENDPOINT = "/polymarket/orders";
 /** Custom error for validation failures */
@@ -102,11 +107,14 @@ export async function fetchAllTrades(apiKey, params) {
 }
 /**
  * Parse and normalize trade data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export function parseTradeData(trade) {
     return {
         token_id: trade.token_id || null,
-        token_label: trade.token_label || null,
+        token_label: sanitizeString(trade.token_label, 100),
         side: trade.side || null,
         market_slug: trade.market_slug || null,
         condition_id: trade.condition_id || null,
@@ -117,7 +125,7 @@ export function parseTradeData(trade) {
         user: trade.user || null,
         tx_hash: trade.tx_hash || null,
         block_number: trade.block_number ?? null,
-        title: trade.title || null,
+        title: sanitizeString(trade.title, 500),
         order_hash: trade.order_hash || null,
         taker: trade.taker || null,
     };

@@ -9,6 +9,17 @@ description: Fetch and discover Polymarket markets from DOME API. Use this skill
 
 Discover and filter Polymarket prediction markets using the DOME API. This skill provides tools to fetch market data, search by keywords, filter by volume/status/tags, and identify markets suitable for backtesting.
 
+## Security
+
+This skill implements defense-in-depth measures against indirect prompt injection (Snyk W011):
+
+- **Input Sanitization**: All user-generated content (titles, descriptions, tags) is sanitized using `security.ts`
+- **Pattern Filtering**: Known prompt injection patterns are removed (e.g., "ignore previous instructions", "system:")
+- **Content Validation**: Suspicious content with excessive special characters is flagged
+- **Fail-Safe**: Processing errors return original data rather than corrupting it
+
+The skill fetches data from the trusted DOME API (api.domeapi.io) which provides structured market data from the Polymarket protocol.
+
 ## Setup
 
 Before using this skill, make sure you have built the TypeScript files:

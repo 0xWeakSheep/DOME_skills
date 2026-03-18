@@ -3,7 +3,12 @@
  *
  * This module provides functions for analyzing market microstructure,
  * orderbook depth, liquidity, and price impact.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
+import { sanitizeString } from "./security.js";
 const BASE_URL = "https://api.domeapi.io/v1";
 /** Custom error classes for DOME API */
 export class DomeAPIError extends Error {
@@ -67,6 +72,9 @@ export async function fetchMarketPrice(apiKey, tokenId, at_time) {
 }
 /**
  * Parse orderbook snapshot
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export function parseOrderbookSnapshot(snapshot) {
     const asks = (snapshot.asks || []).map((a) => ({
@@ -91,8 +99,8 @@ export function parseOrderbookSnapshot(snapshot) {
         timestamp: snapshot.timestamp || 0,
         midPrice,
         spread,
-        assetId: snapshot.assetId || "",
-        market: snapshot.market || "",
+        assetId: sanitizeString(snapshot.assetId, 200) || "",
+        market: sanitizeString(snapshot.market, 200) || "",
     };
 }
 /**

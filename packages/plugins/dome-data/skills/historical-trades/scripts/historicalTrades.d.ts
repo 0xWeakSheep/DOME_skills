@@ -3,6 +3,10 @@
  *
  * This module provides functions for fetching and analyzing
  * historical trade data from Polymarket through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
 /** Custom error for validation failures */
 export declare class ValidationError extends Error {
@@ -63,6 +67,9 @@ export declare function fetchAllTrades(apiKey: string, params: Omit<FetchTradesP
 }): Promise<Trade[]>;
 /**
  * Parse and normalize trade data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export declare function parseTradeData(trade: Partial<Trade>): ParsedTrade;
 /** Parsed trade data structure */

@@ -3,6 +3,10 @@
  *
  * This module provides functions for fetching and analyzing
  * candlestick data from Polymarket through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
 /** Interval limits in seconds */
 export declare const INTERVAL_LIMITS: Record<number, number>;

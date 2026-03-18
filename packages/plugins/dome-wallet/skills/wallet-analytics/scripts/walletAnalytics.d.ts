@@ -3,6 +3,10 @@
  *
  * This module provides functions for analyzing wallet performance,
  * positions, and trading activity through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
 /** Custom error classes for DOME API */
 export declare class DomeAPIError extends Error {
@@ -182,10 +186,16 @@ export declare function fetchWalletPnL(apiKey: string, walletAddress: string, pa
 }): Promise<PnLData>;
 /**
  * Parse wallet data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export declare function parseWalletData(wallet: Partial<Wallet>): ParsedWallet;
 /**
  * Parse position data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export declare function parsePositionData(position: Partial<Position>): ParsedPosition;
 /**

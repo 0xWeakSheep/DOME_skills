@@ -3,6 +3,10 @@
  *
  * This module provides functions for monitoring and analyzing
  * trading activity including MERGES, SPLITS, and REDEEMS.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
 /** Custom error classes for DOME API */
 export declare class DomeAPIError extends Error {
@@ -128,6 +132,9 @@ export declare function fetchAllActivity(apiKey: string, params?: {
 }): Promise<Activity[]>;
 /**
  * Parse activity data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export declare function parseActivity(activity: Partial<Activity>): ParsedActivity;
 /**

@@ -3,7 +3,12 @@
  *
  * This module provides functions for discovering, filtering, and analyzing
  * Polymarket events through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
+import { sanitizeString, sanitizeStringArray } from "./security.js";
 const BASE_URL = "https://api.domeapi.io/v1";
 /** Custom error classes for DOME API */
 export class DomeAPIError extends Error {
@@ -116,20 +121,23 @@ export async function fetchAllEvents(apiKey, params = {}) {
 }
 /**
  * Normalize and extract key fields from event data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export function parseEventData(event) {
     return {
         event_slug: event.event_slug || "",
-        title: event.title || "",
-        subtitle: event.subtitle ?? null,
+        title: sanitizeString(event.title, 500) || "",
+        subtitle: sanitizeString(event.subtitle, 1000),
         status: event.status || "open",
         start_time: event.start_time || 0,
         end_time: event.end_time || 0,
         volume_fiat_amount: event.volume_fiat_amount || 0,
-        settlement_sources: event.settlement_sources ?? null,
+        settlement_sources: sanitizeString(event.settlement_sources, 1000),
         rules_url: event.rules_url ?? null,
         image: event.image ?? null,
-        tags: event.tags || [],
+        tags: sanitizeStringArray(event.tags, 50),
         market_count: event.market_count || 0,
         markets: event.markets || [],
     };

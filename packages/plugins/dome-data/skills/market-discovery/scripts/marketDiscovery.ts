@@ -3,7 +3,13 @@
  *
  * This module provides functions for discovering, filtering, and analyzing
  * Polymarket markets through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
+
+import { sanitizeString, sanitizeStringArray } from "./security.js";
 
 const BASE_URL = "https://api.domeapi.io/v1";
 
@@ -226,6 +232,9 @@ export async function fetchAllMarkets(
 
 /**
  * Normalize and extract key fields from market data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export function parseMarketData(market: Market): ParsedMarket {
   const sideA = market.side_a || { id: null, label: null };
@@ -235,29 +244,32 @@ export function parseMarketData(market: Market): ParsedMarket {
     market_slug: market.market_slug,
     event_slug: market.event_slug,
     condition_id: market.condition_id,
-    title: market.title,
-    description: market.description,
+    title: sanitizeString(market.title, 500) || "",
+    description: sanitizeString(market.description, 2000),
     start_time: market.start_time,
     end_time: market.end_time,
     close_time: market.close_time,
     completed_time: market.completed_time,
     status: market.status,
-    tags: market.tags || [],
+    tags: sanitizeStringArray(market.tags, 50),
     volume_total: market.volume_total || 0,
     volume_1_week: market.volume_1_week || 0,
     volume_1_month: market.volume_1_month || 0,
     volume_1_year: market.volume_1_year || 0,
     image: market.image,
-    resolution_source: (market as unknown as Record<string, string>).resolution_source,
+    resolution_source: sanitizeString(
+      (market as unknown as Record<string, string>).resolution_source,
+      500
+    ),
     side_a: {
       token_id: sideA.id,
-      label: sideA.label,
+      label: sanitizeString(sideA.label, 100),
     },
     side_b: {
       token_id: sideB.id,
-      label: sideB.label,
+      label: sanitizeString(sideB.label, 100),
     },
-    winning_side: market.winning_side,
+    winning_side: sanitizeString(market.winning_side, 100),
     extra_fields: market.extra_fields || {},
   };
 }
@@ -280,7 +292,7 @@ export interface ParsedMarket {
   volume_1_month: number;
   volume_1_year: number;
   image: string;
-  resolution_source: string | undefined;
+  resolution_source: string | null;
   side_a: { token_id: string | null; label: string | null };
   side_b: { token_id: string | null; label: string | null };
   winning_side: string | null;

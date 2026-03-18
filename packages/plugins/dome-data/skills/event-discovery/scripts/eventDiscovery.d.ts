@@ -3,6 +3,10 @@
  *
  * This module provides functions for discovering, filtering, and analyzing
  * Polymarket events through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
 /** Custom error classes for DOME API */
 export declare class DomeAPIError extends Error {
@@ -76,6 +80,9 @@ export declare function fetchAllEvents(apiKey: string, params?: Omit<FetchEvents
 }): Promise<Event[]>;
 /**
  * Normalize and extract key fields from event data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export declare function parseEventData(event: Partial<Event>): ParsedEvent;
 /** Parsed event data structure */

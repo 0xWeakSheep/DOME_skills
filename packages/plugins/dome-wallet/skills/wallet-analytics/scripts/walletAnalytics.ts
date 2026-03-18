@@ -3,7 +3,13 @@
  *
  * This module provides functions for analyzing wallet performance,
  * positions, and trading activity through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
+
+import { sanitizeString } from "./security.js";
 
 const BASE_URL = "https://api.domeapi.io/v1";
 
@@ -331,6 +337,9 @@ export async function fetchWalletPnL(
 
 /**
  * Parse wallet data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export function parseWalletData(wallet: Partial<Wallet>): ParsedWallet {
   const metrics = wallet.wallet_metrics;
@@ -339,8 +348,8 @@ export function parseWalletData(wallet: Partial<Wallet>): ParsedWallet {
     eoa: wallet.eoa || "",
     proxy: wallet.proxy || "",
     wallet_type: wallet.wallet_type || "",
-    handle: wallet.handle ?? null,
-    pseudonym: wallet.pseudonym ?? null,
+    handle: sanitizeString(wallet.handle, 100),
+    pseudonym: sanitizeString(wallet.pseudonym, 100),
     image: wallet.image ?? null,
     total_volume: metrics?.total_volume || 0,
     total_trades: metrics?.total_trades || 0,
@@ -354,20 +363,23 @@ export function parseWalletData(wallet: Partial<Wallet>): ParsedWallet {
 
 /**
  * Parse position data
+ *
+ * SECURITY: All user-generated string fields are sanitized to prevent
+ * indirect prompt injection attacks (Snyk W011).
  */
 export function parsePositionData(position: Partial<Position>): ParsedPosition {
   return {
     wallet: position.wallet || "",
     token_id: position.token_id || "",
     condition_id: position.condition_id ?? null,
-    title: position.title ?? null,
+    title: sanitizeString(position.title, 500),
     shares: position.shares || 0,
     shares_normalized: position.shares_normalized || 0,
     redeemable: position.redeemable || false,
     market_slug: position.market_slug ?? null,
     event_slug: position.event_slug ?? null,
     image: position.image ?? null,
-    label: position.label ?? null,
+    label: sanitizeString(position.label, 100),
     market_status: position.market_status || "open",
     end_time: position.end_time || 0,
   };

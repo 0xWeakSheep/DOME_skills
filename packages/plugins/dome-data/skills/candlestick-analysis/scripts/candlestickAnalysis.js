@@ -3,7 +3,12 @@
  *
  * This module provides functions for fetching and analyzing
  * candlestick data from Polymarket through the DOME API.
+ *
+ * SECURITY NOTE: All user-generated content from the DOME API is sanitized
+ * using security utilities to mitigate indirect prompt injection risks (W011).
+ * See security.ts for implementation details.
  */
+import { sanitizeString } from "./security.js";
 const BASE_URL = "https://api.domeapi.io/v1";
 /** Interval limits in seconds */
 export const INTERVAL_LIMITS = {
@@ -105,8 +110,8 @@ export function parseCandlestickData(response) {
         }));
         series.push({
             token_metadata: {
-                token_id: tokenMetadata.token_id,
-                side: tokenMetadata.side,
+                token_id: sanitizeString(tokenMetadata.token_id, 200) || "",
+                side: sanitizeString(tokenMetadata.side, 100) || "",
             },
             candlesticks: candles,
         });

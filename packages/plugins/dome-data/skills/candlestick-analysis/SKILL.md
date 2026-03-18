@@ -9,6 +9,17 @@ description: Analyze historical candlestick data for Polymarket prediction marke
 
 This skill enables fetching and analyzing historical candlestick (OHLCV) data from Polymarket prediction markets via the DOME API. It provides tools for technical analysis including moving averages, volatility calculation, and trend detection.
 
+## Security
+
+This skill implements defense-in-depth measures against indirect prompt injection (Snyk W011):
+
+- **Input Sanitization**: Token metadata (token_id, side labels) is sanitized using `security.ts`
+- **Pattern Filtering**: Known prompt injection patterns are removed (e.g., "ignore previous instructions", "system:")
+- **Content Validation**: Suspicious content with excessive special characters is flagged
+- **Fail-Safe**: Processing errors return original data rather than corrupting it
+
+The skill fetches data from the trusted DOME API (api.domeapi.io) which provides structured candlestick data from the Polymarket protocol.
+
 ## Quick Start
 
 ```typescript

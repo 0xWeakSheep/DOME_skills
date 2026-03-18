@@ -9,6 +9,17 @@ description: Monitor and analyze Polymarket trading activity including MERGES, S
 
 Monitor and analyze trading activity on Polymarket including token merges, splits, and redemptions. Useful for tracking whale movements, detecting coordinated activity, and identifying market closing signals.
 
+## Security
+
+This skill implements defense-in-depth measures against indirect prompt injection (Snyk W011):
+
+- **Input Sanitization**: All user-generated content (activity titles, market slugs) is sanitized using `security.ts`
+- **Pattern Filtering**: Known prompt injection patterns are removed (e.g., "ignore previous instructions", "system:")
+- **Content Validation**: Suspicious content with excessive special characters is flagged
+- **Fail-Safe**: Processing errors return original data rather than corrupting it
+
+The skill fetches data from the trusted DOME API (api.domeapi.io) which provides structured activity data from the Polymarket protocol.
+
 ## Setup
 
 ```bash
