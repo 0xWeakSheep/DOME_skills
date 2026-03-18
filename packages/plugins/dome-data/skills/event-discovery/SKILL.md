@@ -120,6 +120,26 @@ const stats = calculateEventStats(event);
 // Returns: { total_volume, total_markets, avg_volume_per_market, ... }
 ```
 
+## Event Data Structure
+
+The `Event` object returned by the API contains the following fields:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `event_slug` | `string` | Unique identifier for the event |
+| `title` | `string` | Event title |
+| `subtitle` | `string \| null` | Event description/subtitle |
+| `status` | `"open" \| "closed"` | Current event status |
+| `start_time` | `number` | Unix timestamp when event started |
+| `end_time` | `number` | Unix timestamp when event ends |
+| `volume_fiat_amount` | `number` | **Total USD volume across all markets** |
+| `market_count` | `number` | Number of markets in this event |
+| `markets` | `EventMarket[] \| null` | Array of markets (when `include_markets=true`) |
+| `tags` | `string[]` | Tags/categories for the event |
+| `image` | `string \| null` | URL to event image |
+
+**Note:** The volume field is `volume_fiat_amount`, not `volume`.
+
 ## Data Limitations
 
 - Maximum 100 events per request

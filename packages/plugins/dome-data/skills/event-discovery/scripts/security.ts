@@ -48,9 +48,14 @@ const PROMPT_INJECTION_PATTERNS = [
  * @param maxLength Maximum allowed length (default: 1000)
  * @returns Sanitized string safe for processing
  */
-export function sanitizeString(content: string | null | undefined, maxLength: number = 1000): string | null {
+export function sanitizeString(content: unknown, maxLength: number = 1000): string | null {
   if (content === null || content === undefined) {
     return null;
+  }
+
+  // Defensive: ensure content is a string
+  if (typeof content !== 'string') {
+    return String(content);
   }
 
   let sanitized = content;

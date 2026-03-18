@@ -49,8 +49,8 @@ for (const market of result.markets) {
   console.log(`${parsed.title} - Volume: $${parsed.volume_total}`);
 }
 
-// Search for Bitcoin markets
-const searchResult = await searchMarkets(apiKey, "bitcoin");
+// Search for Bitcoin markets (status is required: "open" or "closed")
+const searchResult = await searchMarkets(apiKey, "bitcoin", "open");
 
 // Fetch all markets matching criteria
 const allCrypto = await fetchAllMarkets(apiKey, { tags: ["crypto"], min_volume: 10000 });
@@ -148,13 +148,30 @@ const candidates = filterBacktestCandidates(
 
 Search markets by keyword (searches title and description).
 
+**Note:** `status` parameter is **required** for search. Search cannot be combined with other filters per API.
+
 ```typescript
+// Search open markets
 const result = await searchMarkets(
   apiKey,
-  "presidential election"
+  "presidential election",
+  "open"  // Required: "open" or "closed"
 );
-// Note: Search cannot be combined with other filters per API
+
+// Search with options
+const result = await searchMarkets(
+  apiKey,
+  "bitcoin",
+  "open",
+  { limit: 20 }
+);
 ```
+
+**Parameters:**
+- `apiKey` - Your DOME API key
+- `query` - Search query (min 2 characters)
+- `status` - **Required:** `"open"` or `"closed"`
+- `options` - Optional: `{ limit?: number; pagination_key?: string }`
 
 ### getMarketByConditionId()
 
