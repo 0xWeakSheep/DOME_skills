@@ -11,6 +11,14 @@ Before using this toolkit, you need:
 
 ## Installation
 
+Install all skills from this repository:
+
+```bash
+npx skills add 0xWeakSheep/DOME_skills --all
+```
+
+For local development:
+
 ```bash
 # Clone or navigate to the repository
 cd DOME_skills
