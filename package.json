@@ -1,0 +1,24 @@
+{
+  "name": "dome-skills",
+  "version": "1.0.0",
+  "description": "DOME Polymarket skills for market data analysis and backtesting",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:market-discovery": "vitest run test/unit/dome-data/marketDiscovery.test.ts",
+    "test:historical-trades": "vitest run test/unit/dome-data/historicalTrades.test.ts",
+    "test:candlestick-analysis": "vitest run test/unit/dome-data/candlestickAnalysis.test.ts",
+    "test:backtest-planner": "vitest run test/unit/dome-backtesting/backtestPlanner.test.ts",
+    "check": "tsc --noEmit",
+    "lint": "eslint packages/plugins/ test/",
+    "fmt": "prettier --write packages/plugins/ test/"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

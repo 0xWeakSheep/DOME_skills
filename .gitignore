@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Environment
+.env
+test/unit/.env
+.env.local
+.env.*.local
+
+# System files
+.DS_Store
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Test cache
+.pytest_cache/
+*.pyc
+
+# Directories not for remote
+dome_docs/
+example_uni/
