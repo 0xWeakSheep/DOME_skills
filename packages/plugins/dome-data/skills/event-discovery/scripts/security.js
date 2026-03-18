@@ -50,6 +50,10 @@ export function sanitizeString(content, maxLength = 1000) {
     if (content === null || content === undefined) {
         return null;
     }
+    // Defensive: ensure content is a string
+    if (typeof content !== 'string') {
+        return String(content);
+    }
     let sanitized = content;
     // Remove prompt injection patterns
     for (const pattern of PROMPT_INJECTION_PATTERNS) {

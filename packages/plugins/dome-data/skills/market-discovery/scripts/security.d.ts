@@ -21,7 +21,7 @@
  * @param maxLength Maximum allowed length (default: 1000)
  * @returns Sanitized string safe for processing
  */
-export declare function sanitizeString(content: string | null | undefined, maxLength?: number): string | null;
+export declare function sanitizeString(content: unknown, maxLength?: number): string | null;
 /**
  * Sanitize array of strings
  */
