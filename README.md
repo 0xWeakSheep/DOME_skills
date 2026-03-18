@@ -18,12 +18,17 @@ cd DOME_skills
 # Install dependencies
 npm install
 
+# Build TypeScript files to JavaScript (required before using skills)
+npm run build
+
 # Set your DOME API key
 export DOME_API_KEY="your_api_key_here"
 
 # Or create a .env file in test/unit/
 echo "DOME_API_KEY=your_api_key_here" > test/unit/.env
 ```
+
+> **Note:** You must run `npm run build` after installation to compile TypeScript files. The skills import `.js` files, which are generated from the `.ts` source files during the build process.
 
 ## Quick Start
 

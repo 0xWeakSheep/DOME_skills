@@ -9,6 +9,18 @@ description: Fetch and discover Polymarket markets from DOME API. Use this skill
 
 Discover and filter Polymarket prediction markets using the DOME API. This skill provides tools to fetch market data, search by keywords, filter by volume/status/tags, and identify markets suitable for backtesting.
 
+## Setup
+
+Before using this skill, make sure you have built the TypeScript files:
+
+```bash
+# From the DOME_skills root directory
+npm install
+npm run build
+```
+
+This compiles the `.ts` files to `.js` files required by the import statements below.
+
 ## Quick Start
 
 ```typescript

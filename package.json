@@ -4,6 +4,8 @@
   "description": "DOME Polymarket skills for market data analysis and backtesting",
   "type": "module",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "build:watch": "tsc -p tsconfig.build.json --watch",
     "test": "vitest run",
     "test:market-discovery": "vitest run test/unit/dome-data/marketDiscovery.test.ts",
     "test:historical-trades": "vitest run test/unit/dome-data/historicalTrades.test.ts",
@@ -11,7 +13,8 @@
     "test:backtest-planner": "vitest run test/unit/dome-backtesting/backtestPlanner.test.ts",
     "check": "tsc --noEmit",
     "lint": "eslint packages/plugins/ test/",
-    "fmt": "prettier --write packages/plugins/ test/"
+    "fmt": "prettier --write packages/plugins/ test/",
+    "clean": "find packages/plugins -name '*.js' -o -name '*.js.map' -o -name '*.d.ts' -o -name '*.d.ts.map' | xargs rm -f"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
