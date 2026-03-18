@@ -151,10 +151,8 @@ describe("marketDiscovery", () => {
       }
     });
 
-    it.skip("searchMarkets should return results", async () => {
-      // Note: Search endpoint has different requirements than filter endpoint
-      // May require specific query parameters or different endpoint path
-      const result = await searchMarkets(API_KEY, "bitcoin");
+    it("searchMarkets should return results", async () => {
+      const result = await searchMarkets(API_KEY, "bitcoin", "open");
 
       expect(result).toBeDefined();
       const markets = Array.isArray(result) ? result : result.markets;
@@ -162,7 +160,7 @@ describe("marketDiscovery", () => {
     });
 
     it("should throw on short search query", async () => {
-      await expect(searchMarkets(API_KEY, "x")).rejects.toThrow(
+      await expect(searchMarkets(API_KEY, "x", "open")).rejects.toThrow(
         DomeAPIValidationError
       );
     });

@@ -133,7 +133,7 @@ export declare function filterBacktestCandidates(markets: Market[], options?: {
 /**
  * Search markets by keyword
  */
-export declare function searchMarkets(apiKey: string, query: string, options?: {
+export declare function searchMarkets(apiKey: string, query: string, status: "open" | "closed", options?: {
     limit?: number;
     pagination_key?: string;
 }): Promise<MarketsResponse>;

@@ -335,6 +335,7 @@ export function filterBacktestCandidates(
 export async function searchMarkets(
   apiKey: string,
   query: string,
+  status: "open" | "closed",
   options: { limit?: number; pagination_key?: string } = {}
 ): Promise<MarketsResponse> {
   if (query.length < 2) {
@@ -343,13 +344,14 @@ export async function searchMarkets(
     );
   }
 
-  // Note: Search endpoint may have different parameter support
-  // Only pass pagination_key if provided
-  const params: FetchMarketsParams = { search: query };
+  // Note: Search endpoint requires status parameter
+  const params: FetchMarketsParams = { search: query, status };
   if (options.pagination_key) {
     params.pagination_key = options.pagination_key;
   }
-  // Limit may not be supported by search endpoint - let API use default
+  if (options.limit) {
+    params.limit = options.limit;
+  }
   return fetchMarkets(apiKey, params);
 }
 

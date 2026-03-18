@@ -191,17 +191,18 @@ export function filterBacktestCandidates(markets, options = {}) {
 /**
  * Search markets by keyword
  */
-export async function searchMarkets(apiKey, query, options = {}) {
+export async function searchMarkets(apiKey, query, status, options = {}) {
     if (query.length < 2) {
         throw new DomeAPIValidationError("Search query must be at least 2 characters");
     }
-    // Note: Search endpoint may have different parameter support
-    // Only pass pagination_key if provided
-    const params = { search: query };
+    // Note: Search endpoint requires status parameter
+    const params = { search: query, status };
     if (options.pagination_key) {
         params.pagination_key = options.pagination_key;
     }
-    // Limit may not be supported by search endpoint - let API use default
+    if (options.limit) {
+        params.limit = options.limit;
+    }
     return fetchMarkets(apiKey, params);
 }
 /**
