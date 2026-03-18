@@ -139,6 +139,7 @@ export function calculateTradeStats(trades) {
             buy_sell_ratio: 0,
             buy_volume: 0,
             sell_volume: 0,
+            sentiment: "neutral",
         };
     }
     let totalVolume = 0;
@@ -179,6 +180,16 @@ export function calculateTradeStats(trades) {
     else if (buyCount > 0) {
         buySellRatio = null; // Can't divide by zero
     }
+    // Determine sentiment based on buy/sell ratio and volume
+    let sentiment = "neutral";
+    if (buySellRatio !== null) {
+        if (buySellRatio > 1.2) {
+            sentiment = "bullish";
+        }
+        else if (buySellRatio < 0.8) {
+            sentiment = "bearish";
+        }
+    }
     return {
         total_trades: trades.length,
         total_volume: totalVolume,
@@ -191,6 +202,7 @@ export function calculateTradeStats(trades) {
         buy_sell_ratio: buySellRatio,
         buy_volume: buyVolume,
         sell_volume: sellVolume,
+        sentiment,
     };
 }
 /**

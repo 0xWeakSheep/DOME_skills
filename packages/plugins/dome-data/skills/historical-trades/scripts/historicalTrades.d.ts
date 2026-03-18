@@ -96,6 +96,7 @@ export interface TradeStats {
     buy_sell_ratio: number | null;
     buy_volume: number;
     sell_volume: number;
+    sentiment: "bullish" | "bearish" | "neutral";
 }
 /**
  * Calculate statistics from trades

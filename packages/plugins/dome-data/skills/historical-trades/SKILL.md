@@ -149,7 +149,7 @@ Aggregate trades into time buckets.
 
 ```typescript
 const buckets = aggregateTradesByTime(trades, 3600); // 1 hour
-// Returns: Map of timestamp -> bucket data
+// Returns: Record<number, TimeBucket> - Object with timestamps as keys
 ```
 
 ## Example Workflows
@@ -176,8 +176,8 @@ const trades = await fetchAllTrades(apiKey, {
 });
 
 const hourly = aggregateTradesByTime(trades, 3600);
-for (const [timestamp, bucket] of hourly) {
-  console.log(`${new Date(timestamp * 1000)}: ${bucket.count} trades`);
+for (const [timestamp, bucket] of Object.entries(hourly)) {
+  console.log(`${new Date(parseInt(timestamp) * 1000)}: ${bucket.count} trades`);
 }
 ```
 

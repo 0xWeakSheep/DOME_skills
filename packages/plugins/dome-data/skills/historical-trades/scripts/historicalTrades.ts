@@ -241,6 +241,7 @@ export interface TradeStats {
   buy_sell_ratio: number | null;
   buy_volume: number;
   sell_volume: number;
+  sentiment: "bullish" | "bearish" | "neutral";
 }
 
 /**
@@ -260,6 +261,7 @@ export function calculateTradeStats(trades: Partial<Trade>[]): TradeStats {
       buy_sell_ratio: 0,
       buy_volume: 0,
       sell_volume: 0,
+      sentiment: "neutral",
     };
   }
 
@@ -306,6 +308,16 @@ export function calculateTradeStats(trades: Partial<Trade>[]): TradeStats {
     buySellRatio = null; // Can't divide by zero
   }
 
+  // Determine sentiment based on buy/sell ratio and volume
+  let sentiment: "bullish" | "bearish" | "neutral" = "neutral";
+  if (buySellRatio !== null) {
+    if (buySellRatio > 1.2) {
+      sentiment = "bullish";
+    } else if (buySellRatio < 0.8) {
+      sentiment = "bearish";
+    }
+  }
+
   return {
     total_trades: trades.length,
     total_volume: totalVolume,
@@ -318,6 +330,7 @@ export function calculateTradeStats(trades: Partial<Trade>[]): TradeStats {
     buy_sell_ratio: buySellRatio,
     buy_volume: buyVolume,
     sell_volume: sellVolume,
+    sentiment,
   };
 }
 
