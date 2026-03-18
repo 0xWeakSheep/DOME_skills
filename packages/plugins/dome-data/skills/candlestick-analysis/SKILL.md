@@ -93,7 +93,7 @@ The API returns an array of `CandlestickSeries` objects, one for each market sid
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `timestamp` | number | Unix timestamp for period end |
+| `end_period_ts` | number | Unix timestamp for period end |
 | `open_price` | number | Opening price |
 | `high_price` | number | High price |
 | `low_price` | number | Low price |

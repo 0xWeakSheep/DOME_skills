@@ -112,7 +112,7 @@ function formatCandlestickSummary(series: CandlestickSeries): CandlestickSummary
 
 ```typescript
 interface Candlestick {
-  timestamp: number;      // Unix timestamp (seconds)
+  end_period_ts: number;  // Unix timestamp (seconds)
   open_price: number;     // Opening price
   high_price: number;     // Highest price
   low_price: number;      // Lowest price
