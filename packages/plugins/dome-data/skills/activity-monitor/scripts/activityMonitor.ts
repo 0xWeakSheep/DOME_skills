@@ -35,6 +35,7 @@ export type ActivityType = "MERGE" | "SPLIT" | "REDEEM";
 export interface Activity {
   token_id: string;
   side: ActivityType;
+  type?: ActivityType; // API returns 'type' instead of 'side'
   market_slug: string;
   condition_id: string;
   shares: number;
@@ -47,6 +48,14 @@ export interface Activity {
   timestamp: number;
   order_hash: string;
   user: string;
+}
+
+/**
+ * Get activity type from activity object
+ * Handles both 'type' and 'side' fields for API compatibility
+ */
+function getActivityType(activity: Activity): ActivityType {
+  return activity.type ?? activity.side ?? "MERGE";
 }
 
 /** Activity response */
@@ -262,7 +271,7 @@ export async function fetchAllActivity(
 export function parseActivity(activity: Partial<Activity>): ParsedActivity {
   return {
     token_id: activity.token_id || "",
-    side: activity.side || "MERGE",
+    side: getActivityType(activity as Activity),
     market_slug: activity.market_slug ?? null,
     condition_id: activity.condition_id ?? null,
     shares: activity.shares || 0,
@@ -287,7 +296,8 @@ export function filterMergesSplitsRedeems(
 
   return activities.filter((activity) => {
     // Filter by activity type
-    if (types && types.length > 0 && !types.includes(activity.side)) {
+    const activityType = getActivityType(activity);
+    if (types && types.length > 0 && !types.includes(activityType)) {
       return false;
     }
 
@@ -393,7 +403,8 @@ export function analyzeActivityPatterns(
     REDEEM: 0,
   };
   for (const activity of activities) {
-    typeDistribution[activity.side]++;
+    const activityType = getActivityType(activity);
+    typeDistribution[activityType]++;
   }
 
   // Time range
@@ -428,7 +439,8 @@ export function analyzeActivityPatterns(
           );
           const typeCounts: Record<string, number> = {};
           for (const a of currentCluster) {
-            typeCounts[a.side] = (typeCounts[a.side] || 0) + 1;
+            const activityType = getActivityType(a);
+            typeCounts[activityType] = (typeCounts[activityType] || 0) + 1;
           }
           const dominantType = Object.entries(typeCounts).sort(
             (a, b) => b[1] - a[1]
@@ -455,7 +467,8 @@ export function analyzeActivityPatterns(
     );
     const typeCounts: Record<string, number> = {};
     for (const a of currentCluster) {
-      typeCounts[a.side] = (typeCounts[a.side] || 0) + 1;
+      const activityType = getActivityType(a);
+      typeCounts[activityType] = (typeCounts[activityType] || 0) + 1;
     }
     const dominantType = Object.entries(typeCounts).sort(
       (a, b) => b[1] - a[1]
@@ -574,7 +587,8 @@ export function detectMarketClosingSignals(
       };
     }
 
-    if (activity.side === "REDEEM") {
+    const activityType = getActivityType(activity);
+    if (activityType === "REDEEM") {
       marketStats[slug].redeem_count++;
       marketStats[slug].total_redeem_shares += activity.shares_normalized;
     } else {
