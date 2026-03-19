@@ -21,6 +21,7 @@ export type ActivityType = "MERGE" | "SPLIT" | "REDEEM";
 export interface Activity {
     token_id: string;
     side: ActivityType;
+    type?: ActivityType;
     market_slug: string;
     condition_id: string;
     shares: number;

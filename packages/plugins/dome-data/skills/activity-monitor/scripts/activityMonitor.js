@@ -24,6 +24,13 @@ export class DomeAPIRateLimitError extends DomeAPIError {
     }
 }
 /**
+ * Get activity type from activity object
+ * Handles both 'type' and 'side' fields for API compatibility
+ */
+function getActivityType(activity) {
+    return activity.type ?? activity.side ?? "MERGE";
+}
+/**
  * Make a request to the DOME API
  */
 async function makeRequest(endpoint, params, apiKey) {
@@ -110,7 +117,7 @@ export async function fetchAllActivity(apiKey, params) {
 export function parseActivity(activity) {
     return {
         token_id: activity.token_id || "",
-        side: activity.side || "MERGE",
+        side: getActivityType(activity),
         market_slug: activity.market_slug ?? null,
         condition_id: activity.condition_id ?? null,
         shares: activity.shares || 0,
@@ -130,7 +137,8 @@ export function filterMergesSplitsRedeems(activities, options = {}) {
     const { types, minShares, market_slug, user, start_time, end_time } = options;
     return activities.filter((activity) => {
         // Filter by activity type
-        if (types && types.length > 0 && !types.includes(activity.side)) {
+        const activityType = getActivityType(activity);
+        if (types && types.length > 0 && !types.includes(activityType)) {
             return false;
         }
         // Filter by minimum shares
@@ -210,7 +218,8 @@ export function analyzeActivityPatterns(activities, options) {
         REDEEM: 0,
     };
     for (const activity of activities) {
-        typeDistribution[activity.side]++;
+        const activityType = getActivityType(activity);
+        typeDistribution[activityType]++;
     }
     // Time range
     const timestamps = activities.map((a) => a.timestamp);
@@ -237,7 +246,8 @@ export function analyzeActivityPatterns(activities, options) {
                     const clusterShares = currentCluster.reduce((sum, a) => sum + a.shares_normalized, 0);
                     const typeCounts = {};
                     for (const a of currentCluster) {
-                        typeCounts[a.side] = (typeCounts[a.side] || 0) + 1;
+                        const activityType = getActivityType(a);
+                        typeCounts[activityType] = (typeCounts[activityType] || 0) + 1;
                     }
                     const dominantType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0][0];
                     clusters.push({
@@ -257,7 +267,8 @@ export function analyzeActivityPatterns(activities, options) {
         const clusterShares = currentCluster.reduce((sum, a) => sum + a.shares_normalized, 0);
         const typeCounts = {};
         for (const a of currentCluster) {
-            typeCounts[a.side] = (typeCounts[a.side] || 0) + 1;
+            const activityType = getActivityType(a);
+            typeCounts[activityType] = (typeCounts[activityType] || 0) + 1;
         }
         const dominantType = Object.entries(typeCounts).sort((a, b) => b[1] - a[1])[0][0];
         clusters.push({
@@ -337,7 +348,8 @@ export function detectMarketClosingSignals(activities) {
                 signals: [],
             };
         }
-        if (activity.side === "REDEEM") {
+        const activityType = getActivityType(activity);
+        if (activityType === "REDEEM") {
             marketStats[slug].redeem_count++;
             marketStats[slug].total_redeem_shares += activity.shares_normalized;
         }
